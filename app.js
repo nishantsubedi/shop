@@ -23,6 +23,8 @@ app.set('view engine', 'ejs');
 // set public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Det Global error variable
+app.locals.errors = null;
 //Body Parser middleware
 //
 // parse application/x-www-form-urlencoded
