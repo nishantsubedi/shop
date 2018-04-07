@@ -108,6 +108,40 @@ router.post('/reorder-pages', function(req, res){
     
  });
 
+ /*
+* GET add page
+*/
+router.get('/add-page', function(req, res){
+    var  title = "";
+    var slug = "";
+    var content = "";
+ 
+    res.render('admin/add_page', {
+        title: title,
+        slug: slug,
+        content: content
+    })
+ });
+
+ /*
+* GET edit page
+*/
+router.get('/edit-page/:slug', function(req, res){
+    Page.findOne({slug: req.params.slug}, (err, page) => {
+        if(err) return console.log(err);
+        else{
+            res.render('admin/edit_page', {
+                title: page.title,
+                slug: page.slug,
+                content: page. content,
+                id: page._id
+            });
+        }
+    });
+ 
+    
+ });
+
 // Exports
 module.exports = router;
 
