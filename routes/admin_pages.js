@@ -71,7 +71,7 @@ router.post('/add-page', function(req, res){
                 title: title,
                 slug: slug,
                 content: content,
-                sortin: 0
+                sorting: 0
             });
             page.save((err) => {
                 if(err)   console.log(err);
@@ -141,7 +141,60 @@ router.get('/edit-page/:slug', function(req, res){
  
     
  });
-
+/*
+* POST edit page
+*/
+router.post('/edit-page/:slug', function(req, res){
+    req.checkBody('title', 'Title mush have a value').notEmpty();
+    req.checkBody('content', 'Content mush have a value').notEmpty();
+ 
+    var title = req.body.title;
+    var slug = req.body.slug.replace(/\s+/g, '-').toLowerCase();
+    if(slug == ""){
+     slug = title.replace(/\s+/g, '-').toLowerCase(); //If slug is empty then use title as slug
+    }
+    var id = req.body.id; 
+    var content = req.body.content; 
+ 
+    var errors = req.validationErrors();
+    if(errors){
+     //    console.log(errors);
+     
+        res.render('admin/edit_page', {
+            errors: errors,
+            title: title,
+            slug: slug,
+            content: content,
+            id: id
+        }); 
+    } else {
+        Page.findOne({slug: slug, _id:{'$ne':id}}, (err, page) => {
+            if(page){
+                 req.flash('danger', 'page ' + slug +' exist choose another.');
+                 res.render('admin/edit_page', {
+                     title: title,
+                     slug: slug,
+                     content: content,
+                     id: id
+                 }); 
+            } else {
+            Page.findById(id, (err, page) => {
+                if(err) return console.log(err);
+                page.title = title;
+                page.slug = slug;
+                page.content = content;
+                page.save((err) => {
+                    if(err)   console.log(err);
+                    req.flash('success', 'Page Edited');
+                    res.redirect('/admin/pages/edit-page/' + page.slug);
+                });
+            });
+            
+            }
+        });
+    }
+ 
+ });
 // Exports
 module.exports = router;
 
