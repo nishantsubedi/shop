@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+// Get Page Moddel
+var Page = require('../models/page');
+
 /*
 * GET pages index
 */
@@ -49,7 +52,28 @@ router.post('/add-page', function(req, res){
         content: content
     }); 
    } else {
-       console.log('success');
+       Page.findOne({slug: slug}, (err, page) => {
+           if(page){
+                req.flash('danger', 'page slug exist choose another.');
+                res.render('admin/add_page', {
+                    title: title,
+                    slug: slug,
+                    content: content
+                }); 
+           } else {
+            var page = new Page({
+                title: title,
+                slug: slug,
+                content: content,
+                sortin: 0
+            });
+            page.save((err) => {
+                if(err)   console.log(err);
+                req.flash('success', 'Page Addded');
+                res.redirect('/admin/pages');
+            });
+           }
+       });
    }
 
 
