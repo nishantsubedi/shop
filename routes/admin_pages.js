@@ -8,9 +8,13 @@ var Page = require('../models/page');
 * GET pages index
 */
 router.get('/', function(req, res){
-    res.render('index', {
-        title: 'Admin Area' 
+    Page.find({}).sort({sorting: 1}).exec((err, pages) => {
+        res.render('admin/pages', {
+            title: 'Pages',
+            pages: pages  
+        }); 
     });
+    
 });
 
 /*
@@ -49,12 +53,13 @@ router.post('/add-page', function(req, res){
         errors: errors,
         title: title,
         slug: slug,
-        content: content
+        content: content,
+        sorting: 100
     }); 
    } else {
        Page.findOne({slug: slug}, (err, page) => {
            if(page){
-                req.flash('danger', 'page slug exist choose another.');
+                req.flash('danger', 'page ' +slug +' exist choose another.');
                 res.render('admin/add_page', {
                     title: title,
                     slug: slug,
