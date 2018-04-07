@@ -49,6 +49,7 @@ router.post('/add-page', function(req, res){
    var errors = req.validationErrors();
    if(errors){
     //    console.log(errors);
+    
     res.render('admin/add_page', {
         errors: errors,
         title: title,
@@ -59,7 +60,7 @@ router.post('/add-page', function(req, res){
    } else {
        Page.findOne({slug: slug}, (err, page) => {
            if(page){
-                req.flash('danger', 'page ' +slug +' exist choose another.');
+                req.flash('danger', 'page ' + slug +' exist choose another.');
                 res.render('admin/add_page', {
                     title: title,
                     slug: slug,
@@ -81,8 +82,28 @@ router.post('/add-page', function(req, res){
        });
    }
 
+});
+/*
+* POST reorder pages
+*/
+router.post('/reorder-pages', function(req, res){
+   var ids = req.body['id[]'];
+   var count = 0;
+   for( var i = 0; i < ids.length; i++) {
+       var id = ids[i];
+       count++;
+     (function(count){
+       Page.findById(id, (err, page) => {
+           page.sorting = count;
+           page.save((err) => {
+                if(err){
+                    return console.log(err);
+                }
+           });
+       });
+    })(count);
+   }
 
-   
  
     
  });
