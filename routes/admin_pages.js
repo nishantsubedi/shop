@@ -71,7 +71,7 @@ router.post('/add-page', function(req, res){
                 title: title,
                 slug: slug,
                 content: content,
-                sorting: 0
+                sorting: 100
             });
             page.save((err) => {
                 if(err)   console.log(err);
@@ -195,6 +195,19 @@ router.post('/edit-page/:slug', function(req, res){
     }
  
  });
+
+/*
+* GET delete page
+*/
+router.get('/delete-page/:id', function(req, res){
+    Page.findByIdAndRemove(req.params.id, (err) => {
+        if(err) return console.log(err);
+        req.flash('success', 'Page Deleted');
+        res.redirect('/admin/pages/');
+    })
+    
+});
+
 // Exports
 module.exports = router;
 
