@@ -5,16 +5,17 @@ var router = express.Router();
 var Category = require('../models/category');
 
 /*
-* GET pages index
+* GET category index
 */
 router.get('/', function(req, res){
-    res.send('cats index');
-    // Page.find({}).sort({sorting: 1}).exec((err, pages) => {
-    //     res.render('admin/pages', {
-    //         title: 'Pages',
-    //         pages: pages  
-    //     }); 
-    // });
+    Category.find((err, categories) => {
+        if(err) console.log(err);
+
+        res.render('admin/categories', {
+            title: 'Categories',
+            categories: categories  
+        }); 
+    });
     
 });
 
