@@ -32,6 +32,7 @@ router.get('/add-page', function(req, res){
    })
 });
 
+
 /*
 * POST add page
 */
@@ -54,8 +55,7 @@ router.post('/add-page', function(req, res){
         errors: errors,
         title: title,
         slug: slug,
-        content: content,
-        sorting: 100
+        content: content
     }); 
    } else {
        Page.findOne({slug: slug}, (err, page) => {
@@ -108,27 +108,22 @@ router.post('/reorder-pages', function(req, res){
     
  });
 
- /*
-* GET add page
-*/
-router.get('/add-page', function(req, res){
-    var  title = "";
-    var slug = "";
-    var content = "";
- 
-    res.render('admin/add_page', {
-        title: title,
-        slug: slug,
-        content: content
-    })
- });
+
 
  /*
 * GET edit page
 */
 router.get('/edit-page/:slug', function(req, res){
     Page.findOne({slug: req.params.slug}, (err, page) => {
-        if(err) return console.log(err);
+        if(err) {
+            // return console.log(err);
+            console.log(err);
+        }
+        
+        if(!page){
+            res.redirect('/admin/pages');
+        }   
+        
         else{
             res.render('admin/edit_page', {
                 title: page.title,
