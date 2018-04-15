@@ -5,14 +5,16 @@ var config = require('./config/database');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
+var fileUpload = require('express-fileupload');
+
 
 // Connect to db
 mongoose.connect(config.database);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.on('open', () => {
-    console.log('Connected to mongodb');
-})
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.on('open', () => {
+        console.log('Connected to mongodb');
+    })
 // Init app
 var app = express();
 
@@ -23,8 +25,12 @@ app.set('view engine', 'ejs');
 // set public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Det Global error variable
+// Set Global error variable
 app.locals.errors = null;
+
+// Express fileUpload middleware
+app.use(fileUpload());
+
 //Body Parser middleware
 //
 // parse application/x-www-form-urlencoded
@@ -69,14 +75,16 @@ app.use(function (req, res, next) {
 var pages = require('./routes/pages');
 var adminPages = require('./routes/admin_pages');
 var adminCategories = require('./routes/admin_categories');
+var adminProducts = require('./routes/admin_products');
 
 app.use('/', pages);
 app.use('/admin/pages', adminPages);
 app.use('/admin/categories', adminCategories);
+app.use('/admin/products', adminProducts);
 
 // Start the server
 const port = 3000;
 app.listen(port, () => {
-    console.log('Server startted on port ' + port);
+    console.log('Server started on port ' + port);
 });
 

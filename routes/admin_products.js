@@ -1,8 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var mkdirp = require('fs-extra');
+var fs = require('mkdirp');
+var resizeImg = require('resize-img');
 
-// Get Page Moddel
-var Page = require('../models/page');
+// Get Product Moddel
+var Product = require('../models/product');
 
 /*
 * GET pages index
